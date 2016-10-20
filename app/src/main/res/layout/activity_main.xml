@@ -22,21 +22,24 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Today, June 24" />
+            android:text="Today, June 24"
+            android:layout_marginBottom="10dp"/>
 
         <TextView
             android:id="@+id/maxTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="21°"
-            android:layout_below="@id/date"/>
+            android:layout_below="@id/date"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/minTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="8°"
-            android:layout_below="@id/maxTemp"/>
+            android:layout_below="@id/maxTemp"
+            android:textSize="18sp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/right"
@@ -47,7 +50,7 @@
         android:layout_weight="50">
 
         <ImageView
-            android:id="@id/image"
+            android:id="@+id/weather_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_launcher"/>
