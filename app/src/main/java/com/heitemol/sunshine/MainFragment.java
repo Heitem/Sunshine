@@ -7,6 +7,13 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.R.id.list;
 
 
 /**
@@ -60,11 +67,31 @@ public class MainFragment extends Fragment {
         }
     }
 
+    ListView lv;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+        //Static data
+        List<String> weekForecast = new ArrayList<>();
+        weekForecast.add("Today - Sunny - 88/63");
+        weekForecast.add("Tomorrow - Foggy - 70/46");
+        weekForecast.add("Weds - Cloudy - 72/36");
+
+        //The adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        //ListView
+        lv = (ListView) rootView.findViewById(R.id.listview_forecast);
+        //Adding the adapter to the ListView
+        lv.setAdapter(adapter);
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
