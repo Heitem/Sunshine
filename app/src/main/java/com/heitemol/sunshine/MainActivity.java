@@ -6,6 +6,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+
+import cz.msebera.android.httpclient.Header;
+
 public class MainActivity extends AppCompatActivity implements ForecastFragment.OnFragmentInteractionListener {
 
     SwipeRefreshLayout srl;
@@ -24,9 +34,22 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                     public void onRefresh() {
                         Log.i("SwipeToRefresh", "onRefresh called from SwipeRefreshLayout");
 
-                        // This method performs the actual data-refresh operation.
-                        // The method calls setRefreshing(false) when it's finished.
-                        //myUpdateOperation();
+                        OpenWeatherMap.get("&q=rabat&cnt=7&units=metric", null, new JsonHttpResponseHandler(){
+
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                super.onSuccess(statusCode, headers, response);
+
+                                try {
+                                    ForecastFragment.getWeatherDataFromJson(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
                     }
                 }
         );
