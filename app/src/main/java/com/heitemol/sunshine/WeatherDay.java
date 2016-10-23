@@ -13,7 +13,7 @@ public class WeatherDay {
     private double coord_lat;
     private String country;
     private int count;
-    private long dt;
+    private int dt;
     private double temp_day;
     private double temp_min;
     private double temp_max;
@@ -31,6 +31,7 @@ public class WeatherDay {
     private int clouds;
     private double rain;
     private Date date;
+    private String dateStr;
 
     public String getName() {
         return name;
@@ -72,11 +73,11 @@ public class WeatherDay {
         this.count = count;
     }
 
-    public long getDt() {
+    public int getDt() {
         return dt;
     }
 
-    public void setDt(long dt) {
+    public void setDt(int dt) {
         this.dt = dt;
     }
 
@@ -216,7 +217,15 @@ public class WeatherDay {
         this.date = date;
     }
 
-    public WeatherDay(String name, double coord_long, double coord_lat, String country, int count, long dt, double temp_day, double temp_min, double temp_max, double temp_night, double temp_eve, double temp_morn, double pressure, int humidity, int weather_id, String weather_main, String weather_description, String weather_icon, double speed, int deg, int clouds, double rain, Date date) {
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
+    }
+
+    public WeatherDay(String name, double coord_long, double coord_lat, String country, int count, int dt, double temp_day, double temp_min, double temp_max, double temp_night, double temp_eve, double temp_morn, double pressure, int humidity, int weather_id, String weather_main, String weather_description, String weather_icon, double speed, int deg, int clouds, double rain, Date date, String dateStr) {
         this.name = name;
         this.coord_long = coord_long;
         this.coord_lat = coord_lat;
@@ -240,6 +249,7 @@ public class WeatherDay {
         this.clouds = clouds;
         this.rain = rain;
         this.date = date;
+        this.dateStr = dateStr;
     }
 
     @Override

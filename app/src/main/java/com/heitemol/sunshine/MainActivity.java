@@ -81,24 +81,30 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             JSONObject dayInfo = days.getJSONObject(i);
             JSONObject temp = dayInfo.getJSONObject("temp");
             JSONObject weather = dayInfo.getJSONArray("weather").getJSONObject(0);
-            WeatherDay wd = new WeatherDay(city.getString("name"), coord.getDouble("long"), coord.getDouble("lat"),
-                    city.getString("country"), forecastJson.getInt("cnt"), dayInfo.getLong("dt"), temp.getDouble("day"),
+
+            //if JSON has the string "rain"
+            Double rain = 0d;
+            if(dayInfo.has("rain")){
+                rain = dayInfo.getDouble("rain");
+            }
+
+            //Fill the object with the data
+            WeatherDay wd = new WeatherDay(city.getString("name"), coord.getDouble("lon"), coord.getDouble("lat"),
+                    city.getString("country"), forecastJson.getInt("cnt"), dayInfo.getInt("dt"), temp.getDouble("day"),
                     temp.getDouble("min"), temp.getDouble("max"), temp.getDouble("night"), temp.getDouble("eve"), temp.getDouble("morn"),
                     dayInfo.getDouble("pressure"), dayInfo.getInt("humidity"), weather.getInt("id"), weather.getString("main"),
                     weather.getString("description"), weather.getString("icon"), dayInfo.getDouble("speed"), dayInfo.getInt("deg"),
-                    dayInfo.getInt("clouds"), dayInfo.getDouble("rain"), date);
+                    dayInfo.getInt("clouds"), rain, date, getReadableDateString(date.getTime()));
 
 
 
             Log.d("DATE", wd.getDate().toString());
-            /*String datetime = dayInfo.getString("dt_txt");
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Calendar cal = sdf.getCalendar();
-            String date = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()) + ", " + cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault()) + " " + cal.get(Calendar.DAY_OF_MONTH);
+            //Add one day to the current date
+            cal.add(Calendar.DATE, 1);
+            date = cal.getTime();
+            Log.d("DATE+1", getReadableDateString(date.getTime()));
 
-            wd[i] = date + " - " + CapsFirst(description) + " - " + Math.round(temp_max) + "/" + Math.round(temp_min);
-            Log.d("DATE", date + " - " + CapsFirst(description) + " - " + Math.round(temp_max) + "/" + Math.round(temp_min));*/
         }
         return wdList;
     }
@@ -115,5 +121,12 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             }
         }
         return ret.toString();
+    }
+
+    //Convert date from milliseconds to readable date
+    private String getReadableDateString(long time){
+
+        SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE, MMM dd");
+        return shortenedDateFormat.format(time);
     }
 }
