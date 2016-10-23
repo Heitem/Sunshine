@@ -4,26 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.provider.UserDictionary;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.FieldPosition;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,6 +73,7 @@ public class ForecastFragment extends Fragment {
     }
 
     ListView lv;
+    public static ArrayAdapter<String> adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,7 +87,7 @@ public class ForecastFragment extends Fragment {
         weekForecast.add("Weds - Cloudy - 72/36");
 
         //The adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+        adapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -143,45 +137,5 @@ public class ForecastFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    //Parse weather data from JSON
-    public static String[] getWeatherDataFromJson(JSONObject forecastJson) throws JSONException, ParseException {
-
-        JSONArray days = forecastJson.getJSONArray("list");
-        /*JSONObject dayInfo = days.getJSONObject(0);
-        JSONObject temperatureInfo = dayInfo.getJSONObject("temp");*/
-
-        String[] wd = new String[days.length()];
-
-        for(int i = 0; i < days.length(); i++){
-            JSONObject dayInfo = days.getJSONObject(i);
-            Double temp_min = dayInfo.getJSONObject("main").getDouble("temp_min");
-            Double temp_max = dayInfo.getJSONObject("main").getDouble("temp_max");
-            String description = dayInfo.getJSONArray("weather").getJSONObject(0).getString("description");
-            String datetime = dayInfo.getString("dt_txt");
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Calendar cal = sdf.getCalendar();
-            String date = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()) + ", " + cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault()) + " " + cal.get(Calendar.DAY_OF_MONTH);
-
-            wd[i] = date + " - " + CapsFirst(description) + " - " + Math.round(temp_max) + "/" + Math.round(temp_min);
-            Log.d("DATE", date + " - " + CapsFirst(description) + " - " + Math.round(temp_max) + "/" + Math.round(temp_min));
-        }
-        return wd;
-    }
-
-    //Uppercase the first letter of every word
-    public static String CapsFirst(String str) {
-        String[] words = str.split(" ");
-        StringBuilder ret = new StringBuilder();
-        for(int i = 0; i < words.length; i++) {
-            ret.append(Character.toUpperCase(words[i].charAt(0)));
-            ret.append(words[i].substring(1));
-            if(i < words.length - 1) {
-                ret.append(' ');
-            }
-        }
-        return ret.toString();
     }
 }
