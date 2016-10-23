@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -14,8 +15,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
@@ -36,27 +39,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        Log.i("SwipeToRefresh", "onRefresh called from SwipeRefreshLayout");
 
-                        OpenWeatherMap.get("&q=sale&cnt=7&units=metric", null, new JsonHttpResponseHandler(){
-
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                super.onSuccess(statusCode, headers, response);
-
-                                //ForecastFragment.adapter.clear();
-                                try {
-                                    //ForecastFragment.adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, getWeatherDataFromJson(response));
-                                    getWeatherDataFromJson(response);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                                ForecastFragment.adapter.notifyDataSetChanged();
-                                srl.setRefreshing(false);
-                            }
-                        });
+                        callForData();
                     }
                 }
         );
@@ -67,13 +51,38 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
 
     }
 
+    //Call for data
+    public void callForData(){
+
+        Log.i("SwipeToRefresh", "onRefresh called from SwipeRefreshLayout");
+
+        OpenWeatherMap.get("&q=sale&cnt=7&units=metric", null, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                try {
+                    ForecastFragment.adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, getStringFromWeatherDayArray(getWeatherDataFromJson(response)));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                ForecastFragment.lv.setAdapter(ForecastFragment.adapter);
+                srl.setRefreshing(false);
+            }
+        });
+    }
+
     //Parse weather data from JSON
-    public WeatherDay[] getWeatherDataFromJson(JSONObject forecastJson) throws JSONException, ParseException {
+    public List<WeatherDay> getWeatherDataFromJson(JSONObject forecastJson) throws JSONException, ParseException {
 
         JSONArray days = forecastJson.getJSONArray("list");
         JSONObject city = forecastJson.getJSONObject("city");
         JSONObject coord = city.getJSONObject("coord");
-        WeatherDay[] wdList = new WeatherDay[days.length()];
+        List<WeatherDay> wdList = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
 
@@ -96,15 +105,12 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                     weather.getString("description"), weather.getString("icon"), dayInfo.getDouble("speed"), dayInfo.getInt("deg"),
                     dayInfo.getInt("clouds"), rain, date, getReadableDateString(date.getTime()));
 
-
-
-            Log.d("DATE", wd.getDate().toString());
+            Log.d("Object", wd.toString());
 
             //Add one day to the current date
             cal.add(Calendar.DATE, 1);
             date = cal.getTime();
-            Log.d("DATE+1", getReadableDateString(date.getTime()));
-
+            wdList.add(wd);
         }
         return wdList;
     }
@@ -124,9 +130,18 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     }
 
     //Convert date from milliseconds to readable date
-    private String getReadableDateString(long time){
+    public String getReadableDateString(long time){
 
         SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE, MMM dd");
         return shortenedDateFormat.format(time);
+    }
+
+    public List<String> getStringFromWeatherDayArray(List<WeatherDay> weatherDays){
+        List<String> wd = new ArrayList<>();
+        for (int i = 0; i < weatherDays.size(); i++){
+            wd.add(weatherDays.get(i).getDateStr() + " - " + CapsFirst(weatherDays.get(i).getWeather_description())
+                    + " - " + Math.round(weatherDays.get(i).getTemp_max()) + "/" + Math.round(weatherDays.get(i).getTemp_min()));
+        }
+        return wd;
     }
 }

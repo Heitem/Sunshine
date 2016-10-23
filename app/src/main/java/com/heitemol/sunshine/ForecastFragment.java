@@ -72,7 +72,7 @@ public class ForecastFragment extends Fragment {
         }
     }
 
-    ListView lv;
+    public static ListView lv;
     public static ArrayAdapter<String> adapter;
 
     @Override
@@ -81,13 +81,13 @@ public class ForecastFragment extends Fragment {
 
 
         //Static data
-        List<String> weekForecast = new ArrayList<>();
+        /*List<String> weekForecast = new ArrayList<>();
         weekForecast.add("Today - Sunny - 88/63");
         weekForecast.add("Tomorrow - Foggy - 70/46");
-        weekForecast.add("Weds - Cloudy - 72/36");
+        weekForecast.add("Weds - Cloudy - 72/36");*/
 
         //The adapter
-        adapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+        //adapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -95,7 +95,7 @@ public class ForecastFragment extends Fragment {
         //ListView
         lv = (ListView) rootView.findViewById(R.id.listview_forecast);
         //Adding the adapter to the ListView
-        lv.setAdapter(adapter);
+        //lv.setAdapter(adapter);
 
         return rootView;
     }

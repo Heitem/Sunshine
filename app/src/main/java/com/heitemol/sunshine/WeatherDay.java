@@ -278,6 +278,7 @@ public class WeatherDay {
                 ", clouds=" + clouds +
                 ", rain=" + rain +
                 ", date=" + date +
+                ", dateStr='" + dateStr + '\'' +
                 '}';
     }
 }
