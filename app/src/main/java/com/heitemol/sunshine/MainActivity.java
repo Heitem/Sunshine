@@ -1,7 +1,9 @@
 package com.heitemol.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -35,6 +37,7 @@ import cz.msebera.android.httpclient.Header;
 public class MainActivity extends AppCompatActivity implements ForecastFragment.OnFragmentInteractionListener {
 
     SwipeRefreshLayout srl;
+    public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +89,12 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
 
         Log.i("SwipeToRefresh", "onRefresh called from SwipeRefreshLayout");
 
-        OpenWeatherMap.get("&q=sale&cnt=7&units=metric", null, new JsonHttpResponseHandler(){
+        // Restore preferences
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String city = sharedPref.getString("Location", "");
+        String unit = sharedPref.getString("Units", "");
+
+        OpenWeatherMap.get("&q=" + city + "&cnt=7&units=" + unit, null, new JsonHttpResponseHandler(){
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
