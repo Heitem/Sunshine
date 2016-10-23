@@ -1,12 +1,18 @@
 package com.heitemol.sunshine;
 
+import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -33,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         setContentView(R.layout.activity_main);
 
         srl = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
+        callForData();
 
         //Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user performs a swipe-to-refresh gesture.
         srl.setOnRefreshListener(
@@ -64,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
 
                 try {
                     ForecastFragment.adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, getStringFromWeatherDayArray(getWeatherDataFromJson(response)));
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (ParseException e) {
@@ -72,6 +79,14 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                 }
                 ForecastFragment.lv.setAdapter(ForecastFragment.adapter);
                 srl.setRefreshing(false);
+
+                ForecastFragment.lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        //Start DetailActivity with the Extra by clicking on an item
+                        startActivity(new Intent(getApplicationContext(), DetailActivity.class).putExtra("data", ForecastFragment.adapter.getItem(i)));
+                    }
+                });
             }
         });
     }
