@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements ForecastFragment.OnFragmentInteractionListener {
@@ -188,5 +187,17 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                     + " - " + Math.round(weatherDays.get(i).getTemp_max()) + "/" + Math.round(weatherDays.get(i).getTemp_min()));
         }
         return wd;
+    }
+
+    public void openPreferredLocationInMap(){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String location = sharedPref.getString("location", "");
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon().appendQueryParameter("q", location).build();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+        else Log.d("Error", "Error on openPreferredLocationInMap");
     }
 }
