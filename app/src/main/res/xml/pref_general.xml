@@ -6,22 +6,23 @@
         android:capitalize="words"
         android:defaultValue="Salé"
         android:inputType="textCapWords"
-        android:key="Location"
+        android:key="location"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="Location" />
+        android:title="Location"/>
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
     <ListPreference
-        android:defaultValue="1"
+        android:defaultValue="metric"
         android:entries="@array/pref_list_titles"
         android:entryValues="@array/pref_list_values"
-        android:key="Units"
+        android:key="units"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="Unit" />
+        android:title="Unit"/>
+        <!--android:summary="%s"/>-->
 
 </PreferenceScreen>

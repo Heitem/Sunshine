@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,11 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
-
 import com.loopj.android.http.JsonHttpResponseHandler;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,14 +24,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements ForecastFragment.OnFragmentInteractionListener {
 
     SwipeRefreshLayout srl;
-    public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +69,11 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.settings_menu:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                // Go to SettingsActivity by skipping header screen
+                Intent intent = new Intent( this, SettingsActivity.class );
+                intent.putExtra( SettingsActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.GeneralPreferenceFragment.class.getName() );
+                intent.putExtra( SettingsActivity.EXTRA_NO_HEADERS, true );
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -90,9 +86,13 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         Log.i("SwipeToRefresh", "onRefresh called from SwipeRefreshLayout");
 
         // Restore preferences
+        String city = "Salé";
+        String unit = "metric";
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String city = sharedPref.getString("Location", "");
-        String unit = sharedPref.getString("Units", "");
+        if(sharedPref.contains("location") && sharedPref.contains("units")) {
+            city = sharedPref.getString("location", "");
+            unit = sharedPref.getString("units", "");
+        }
 
         OpenWeatherMap.get("&q=" + city + "&cnt=7&units=" + unit, null, new JsonHttpResponseHandler(){
 
